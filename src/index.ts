@@ -2,7 +2,8 @@ import { bot } from './bot';
 import {
     handleShowMainMenu,
     handleCheckAge,
-    handleAddData
+    handleAddData,
+    handleFaq
 } from './command-handlers';
 
 bot.onText(/\/start/, async (msg, match) => {
@@ -48,5 +49,7 @@ bot.on('callback_query', async (query) => {
                 await bot.sendMessage(chatId, 'Invalid input. Please try again with two valid numbers.');
             }
         });
+    } else if (data == 'faq') {
+        await handleFaq(query.message!);
     }
 });

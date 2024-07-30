@@ -57,4 +57,7 @@ bot_1.bot.on('callback_query', (query) => __awaiter(void 0, void 0, void 0, func
             });
         });
     }
+    else if (data == 'faq') {
+        yield (0, command_handlers_1.handleFaq)(query.message);
+    }
 }));

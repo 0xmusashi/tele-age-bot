@@ -15,15 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleShowMainMenu = handleShowMainMenu;
 exports.handleCheckAge = handleCheckAge;
 exports.handleAddData = handleAddData;
+exports.handleFaq = handleFaq;
 const bot_1 = require("./bot");
 const CreationDate_1 = __importDefault(require("./CreationDate"));
 const moment_1 = __importDefault(require("moment"));
 const utils_1 = require("./utils");
+const constants_1 = require("./constants");
 const MAIN_MENU_OPTIONS = {
     reply_markup: {
         inline_keyboard: [
             [{ text: 'Check Account Age', callback_data: 'check' }],
             [{ text: 'Input real data', callback_data: 'input' }],
+            [{ text: 'How to add real data', callback_data: 'faq' }],
         ]
     }
 };
@@ -51,6 +54,13 @@ function handleAddData(msg, id, registeredDate) {
         const createDate = new CreationDate_1.default();
         createDate.addDatapoint([id, joinDate]);
         yield bot_1.bot.sendMessage(chatId, 'added');
+        yield handleShowMainMenu(msg);
+    });
+}
+function handleFaq(msg) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const chatId = msg.chat.id;
+        yield bot_1.bot.sendMessage(chatId, constants_1.FAQ);
         yield handleShowMainMenu(msg);
     });
 }

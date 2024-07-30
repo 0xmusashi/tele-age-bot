@@ -11,7 +11,8 @@ import {
     OG_BONUS_POINTS,
     OG_THRESHOLD_DAYS,
     START_TIME,
-    MULTIPLE
+    MULTIPLE,
+    FAQ
 } from './constants';
 
 const MAIN_MENU_OPTIONS = {
@@ -19,6 +20,7 @@ const MAIN_MENU_OPTIONS = {
         inline_keyboard: [
             [{ text: 'Check Account Age', callback_data: 'check' }],
             [{ text: 'Input real data', callback_data: 'input' }],
+            [{ text: 'How to add real data', callback_data: 'faq' }],
         ]
     }
 }
@@ -48,5 +50,11 @@ export async function handleAddData(msg: TelegramBot.Message, id: number, regist
     const createDate = new CreationDate();
     createDate.addDatapoint([id, joinDate]);
     await bot.sendMessage(chatId, 'added');
+    await handleShowMainMenu(msg);
+}
+
+export async function handleFaq(msg: TelegramBot.Message) {
+    const chatId = msg.chat.id;
+    await bot.sendMessage(chatId, FAQ);
     await handleShowMainMenu(msg);
 }
