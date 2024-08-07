@@ -3,22 +3,21 @@ import {
     handleShowMainMenu,
     handleCheckAge,
     handleAddData,
-    handleFaq
-} from './command-handlers';
+    handleFaq,
+    handleGetReward,
+} from './services/command-handlers';
 
 bot.onText(/\/start/, async (msg, match) => {
     try {
-        await handleShowMainMenu(msg);
-    } catch (err) {
-    }
+        await handleShowMainMenu(msg.chat.id);
+    } catch (err) {}
 });
 
 bot.onText(/\/id (.+)/, async (msg, match) => {
     const id = parseInt(match ? match[1] : '0');
     try {
-        await handleCheckAge(msg, id);
-    } catch (err) {
-    }
+        await handleCheckAge(msg.chat.id, id);
+    } catch (err) {}
 });
 
 bot.onText(/\/add (.+) (.+)/, async (msg, match) => {
@@ -26,30 +25,49 @@ bot.onText(/\/add (.+) (.+)/, async (msg, match) => {
     const registeredDate = match ? match[2] : '0';
 
     try {
-        await handleAddData(msg, id, registeredDate);
-    } catch (err) {
-    }
+        await handleAddData(msg.chat.id, id, registeredDate);
+    } catch (err) {}
 });
 
 bot.on('callback_query', async (query) => {
     const chatId = query.message!.chat.id;
     const data = query.data;
 
-    if (data == 'check') {
-        await handleCheckAge(query.message!, chatId);
-    } else if (data == 'input') {
-        await bot.sendMessage(chatId, 'Please enter user telegram id & registered date (e.g. "1559803968 2022-12-01")')
-        bot.once('message', async function handleInput(msg) {
-            const inputs = msg.text!.split(' ');
-            const id = Number(inputs[0]);
-            const registeredDate = inputs[1];
-            if (inputs.length === 2 && !isNaN(Number(inputs[0]))) {
-                await handleAddData(query.message!, id, registeredDate);
-            } else {
-                await bot.sendMessage(chatId, 'Invalid input. Please try again with two valid numbers.');
-            }
-        });
-    } else if (data == 'faq') {
-        await handleFaq(query.message!);
+    switch (data) {
+        case 'check':
+            await handleCheckAge(chatId, chatId);
+            break;
+
+        case 'input':
+            await bot.sendMessage(
+                chatId,
+                'Please enter user telegram id & registered date (e.g. "1559803968 2022-12-01")',
+            );
+
+            bot.once('message', async function handleInput(msg) {
+                const inputs = msg.text!.split(' ');
+
+                if (inputs.length === 2 && !isNaN(Number(inputs[0]))) {
+                    const id = Number(inputs[0]);
+                    const registeredDate = inputs[1];
+
+                    await handleAddData(chatId, id, registeredDate);
+                } else {
+                    await bot.sendMessage(chatId, 'Invalid input. Please try again with a valid ID and date.');
+                }
+            });
+            break;
+
+        case 'faq':
+            await handleFaq(chatId);
+            break;
+
+        case 'reward':
+            await handleGetReward(query);
+            break;
+
+        default:
+            console.warn(`Unknown callback query data: ${data}`);
+            break;
     }
 });

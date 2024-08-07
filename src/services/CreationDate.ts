@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import path from "path";
-import * as math from "mathjs";
+import * as fs from 'fs';
+import path from 'path';
+import * as math from 'mathjs';
 
 export default class CreationDate {
     private readonly order: number;
@@ -10,7 +10,7 @@ export default class CreationDate {
     private y: any;
     constructor(order = 3) {
         this.order = order;
-        this.dataPath = path.join(process.cwd(), "src/dates.json");
+        this.dataPath = path.join(process.cwd(), 'src/data/dates.json');
 
         const { x, y } = this._unpackData();
         this.x = x;
@@ -19,7 +19,7 @@ export default class CreationDate {
     }
 
     _unpackData() {
-        const stringData = fs.readFileSync(this.dataPath, "utf8");
+        const stringData = fs.readFileSync(this.dataPath, 'utf8');
         const data = JSON.parse(stringData);
 
         const xData = Object.keys(data).map(Number);
@@ -29,7 +29,7 @@ export default class CreationDate {
     }
 
     _checkDataPoint(id: string) {
-        const stringData = fs.readFileSync(this.dataPath, "utf8");
+        const stringData = fs.readFileSync(this.dataPath, 'utf8');
         const data = JSON.parse(stringData);
         if (data[id]) return data[id];
     }
@@ -37,12 +37,14 @@ export default class CreationDate {
     _fitData() {
         const x = this.x;
         const y = this.y;
+
         const vandermonde: any = x.map((xi: any) => Array.from({ length: this.order + 1 }, (_, j) => Math.pow(xi, j)));
+
         const vandermondeT: any = math.transpose(vandermonde);
 
         const vtv: any = math.multiply(vandermondeT, vandermonde);
         const vty: any = math.multiply(vandermondeT, y);
-        const coefficients: any = math.lusolve(vtv, vty).map(c => c[0]);
+        const coefficients: any = math.lusolve(vtv, vty).map((c) => c[0]);
 
         return (x: any) => coefficients.reduce((acc: any, coef: any, i: any) => acc + coef * Math.pow(x, i), 0);
     }
@@ -50,12 +52,12 @@ export default class CreationDate {
     addDatapoint(pair: any) {
         pair[0] = String(pair[0]);
 
-        const stringData = fs.readFileSync(this.dataPath, "utf8");
+        const stringData = fs.readFileSync(this.dataPath, 'utf8');
         const data = JSON.parse(stringData);
 
         data[pair[0]] = pair[1];
 
-        fs.writeFileSync(this.dataPath, JSON.stringify(data), "utf8");
+        fs.writeFileSync(this.dataPath, JSON.stringify(data), 'utf8');
 
         const { x, y } = this._unpackData();
         this.x = x;
