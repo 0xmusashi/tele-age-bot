@@ -1,0 +1,5 @@
+export const REWARD_TELEGRAM_START_DATE = '2013-08-14';
+export const REWARD_AGE_POINT = 25000;
+export const REWARD_PREMIUM_POINT = 3000;
+export const REWARD_OG_POINT = 1000;
+export const REWARD_OG_CONDITION_DATE = 1825;

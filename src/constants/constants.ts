@@ -17,38 +17,4 @@ How to add data?
 - Step 5: Enter the user id from step 2 and the registration date from step 3 to the bot (e.g. "117478253 2016-11-02")
 `;
 
-export const TELEGRAM_START_DATE = '2013-08-14';
-export const AGE_POINT = 25000;
-export const PREMIUM_POINT = 3000;
-export const OG_POINT = 1000;
-export const OG_CONDITION_DATE = 1825;
-export type MessageLanguages =
-    | 'none'
-    | 'en'
-    | 'ru'
-    | 'pl'
-    | 'fa'
-    | 'tr'
-    | 'fr'
-    | 'uz'
-    | 'es'
-    | 'pt'
-    | 'nl'
-    | 'ckb'
-    | 'it';
-export const LANGS: MessageLanguages[] = ['en', 'pl', 'fa', 'tr', 'ru', 'fr', 'uz', 'es', 'pt', 'nl', 'ckb', 'it'];
-export const MESSAGES = {
-    none: 'Message\n',
-    en: 'Message\n',
-    ru: 'Сообщение\n',
-    pl: 'Wiadomość\n',
-    fa: 'Message\n',
-    tr: 'Mesaj\n',
-    fr: 'Message\n',
-    uz: 'Hat\n',
-    es: 'Mensaje\n',
-    pt: 'Mensagem\n',
-    nl: 'Bericht\n',
-    ckb: 'پەیام\n',
-    it: 'Messaggio\n',
-};
+export const DATES_FILE_PATH = 'data/dates.json';

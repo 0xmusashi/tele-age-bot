@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 import * as math from 'mathjs';
+import { DATES_FILE_PATH } from '../constants/constants';
 
 export default class CreationDate {
     private readonly order: number;
@@ -10,7 +11,7 @@ export default class CreationDate {
     private y: any;
     constructor(order = 3) {
         this.order = order;
-        this.dataPath = path.join(process.cwd(), 'src/data/dates.json');
+        this.dataPath = path.join(process.cwd(), DATES_FILE_PATH);
 
         const { x, y } = this._unpackData();
         this.x = x;
@@ -71,10 +72,26 @@ export default class CreationDate {
             return check;
         }
         let value = this._func(tg_id);
+
         const current = Math.floor(Date.now() / 1000);
 
+        // If value > today but userId < last checkpoint, find adjacent x,y then random date by x,y
         if (value > current) {
-            value = current;
+            const lastKey = Math.max(...this.x);
+
+            if (tg_id < lastKey) {
+                const smallerIndex = this.x.findIndex((x: number) => x > tg_id) - 1;
+                const largerIndex = smallerIndex + 1;
+
+                if (smallerIndex >= 0 && largerIndex < this.x.length) {
+                    const smallerValue = this.y[smallerIndex];
+                    const largerValue = this.y[largerIndex];
+
+                    value = Math.floor(smallerValue + Math.random() * (largerValue - smallerValue));
+                }
+            } else {
+                value = current;
+            }
         }
 
         return value;

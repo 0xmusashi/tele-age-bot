@@ -1,20 +1,12 @@
-import { bot } from '../bot';
 import CreationDate from './CreationDate';
 import moment from 'moment';
 import TelegramBot from 'node-telegram-bot-api';
-import { convertToEpoch, calculateDiffDays, cleanMessage, treeDisplay } from '../utils/utils';
-import {
-    PREMIUM_BONUS_POINTS,
-    OG_BONUS_POINTS,
-    OG_THRESHOLD_DAYS,
-    START_TIME,
-    MULTIPLE,
-    FAQ,
-    MESSAGES,
-    LANGS,
-    MessageLanguages,
-} from '../constants/constants';
+import { convertToEpoch } from '../utils/utils';
+import { FAQ } from '../constants/constants';
 import RewardService from './reward.service';
+import { LANGS, MessageLanguages, MESSAGES } from '../constants/ui.constant';
+import { cleanMessage, treeDisplay } from '../utils/tree-display.util';
+import { bot } from './bot.service';
 
 const MAIN_MENU_OPTIONS = {
     reply_markup: {

@@ -1,7 +1,13 @@
+import { REWARD_OG_POINT } from './../constants/reward.constant';
 import TelegramBot from 'node-telegram-bot-api';
 import { calculateDiffDays } from '../utils/utils';
 import { RewardResponseDto } from '../interfaces/reward.interface';
-import { AGE_POINT, OG_CONDITION_DATE, OG_POINT, PREMIUM_POINT, TELEGRAM_START_DATE } from '../constants/constants';
+import {
+    REWARD_AGE_POINT,
+    REWARD_OG_CONDITION_DATE,
+    REWARD_PREMIUM_POINT,
+    REWARD_TELEGRAM_START_DATE,
+} from '../constants/reward.constant';
 
 export default class RewardService {
     async getReward(query: TelegramBot.CallbackQuery, date: number): Promise<RewardResponseDto> {
@@ -29,10 +35,10 @@ export default class RewardService {
 
         const diffDays = calculateDiffDays(createdDate, today);
 
-        const teleStartDate = new Date(TELEGRAM_START_DATE);
+        const teleStartDate = new Date(REWARD_TELEGRAM_START_DATE);
         const startDiffDays = calculateDiffDays(teleStartDate, today);
 
-        const points = diffDays * (AGE_POINT / startDiffDays);
+        const points = diffDays * (REWARD_AGE_POINT / startDiffDays);
 
         return Math.floor(points);
     }
@@ -42,7 +48,7 @@ export default class RewardService {
     }
 
     private _calculatePremiumReward(isPremium: boolean): number {
-        return isPremium ? PREMIUM_POINT : 0;
+        return isPremium ? REWARD_PREMIUM_POINT : 0;
     }
 
     private _calculateOGReward(date: number): number {
@@ -51,6 +57,6 @@ export default class RewardService {
 
         const diffDays = calculateDiffDays(createdDate, today);
 
-        return diffDays > OG_CONDITION_DATE ? OG_POINT : 0;
+        return diffDays > REWARD_OG_CONDITION_DATE ? REWARD_OG_POINT : 0;
     }
 }
