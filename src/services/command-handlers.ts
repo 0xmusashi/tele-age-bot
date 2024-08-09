@@ -87,3 +87,40 @@ export async function handleGetReward(query: TelegramBot.CallbackQuery) {
 
     await handleShowMainMenu(userId);
 }
+
+export async function handleGetRewardByTargetId(query: TelegramBot.Message, targetId: number) {
+    const userId = query?.from?.id || query.chat.id;
+    const languageCode = query.from?.language_code ?? 'en';
+    const language: MessageLanguages = LANGS.includes(languageCode as MessageLanguages)
+        ? (languageCode as MessageLanguages)
+        : 'en';
+
+    const createDate = new CreationDate();
+    const date = createDate.func(targetId);
+
+    const rewardService = new RewardService();
+    const reward = await rewardService.getReward(query, date);
+
+    const clean = cleanMessage(query);
+
+    for (const [key, value] of Object.entries(clean)) {
+        if (key !== 'forward_from' && key !== 'from') {
+            continue;
+        }
+
+        clean[key]['target_registered'] = moment(parseInt((date * 1000).toString()))
+            .utc()
+            .format('YYYY-MM-DD');
+        clean[key]['target_age_point'] = reward.agePoint;
+        clean[key]['target_premium_point'] = reward.premiumPoint;
+        clean[key]['target_og_point'] = reward.ogPoint;
+        clean[key]['target_total_point'] = reward.totalPoint;
+    }
+
+    let tree = MESSAGES[language];
+    tree += treeDisplay(clean, 0);
+
+    await bot.sendMessage(userId, tree, { parse_mode: 'HTML' });
+
+    await handleShowMainMenu(userId);
+}

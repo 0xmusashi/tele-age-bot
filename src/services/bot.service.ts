@@ -2,7 +2,14 @@ import TelegramBot from 'node-telegram-bot-api';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-import { handleShowMainMenu, handleCheckAge, handleAddData, handleFaq, handleGetReward } from './command-handlers';
+import {
+    handleShowMainMenu,
+    handleCheckAge,
+    handleAddData,
+    handleFaq,
+    handleGetReward,
+    handleGetRewardByTargetId,
+} from './command-handlers';
 
 const token = <string>process.env.BOT_TOKEN;
 export const bot = new TelegramBot(token, { polling: true });
@@ -16,10 +23,11 @@ export function initializeBot() {
         }
     });
 
-    bot.onText(/\/id (.+)/, async (msg, match) => {
-        const id = parseInt(match ? match[1] : '0');
+    bot.onText(/\/id (.+)/, async (msg: TelegramBot.Message, match) => {
+        const targetId = parseInt(match ? match[1] : '0');
         try {
-            await handleCheckAge(msg.chat.id, id);
+            // await handleCheckAge(msg?.from?.id ?? msg.chat.id, targetId);
+            await handleGetRewardByTargetId(msg, targetId);
         } catch (err) {
             console.error(err);
         }

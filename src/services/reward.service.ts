@@ -10,7 +10,7 @@ import {
 } from '../constants/reward.constant';
 
 export default class RewardService {
-    async getReward(query: TelegramBot.CallbackQuery, date: number): Promise<RewardResponseDto> {
+    async getReward(query: TelegramBot.CallbackQuery | TelegramBot.Message, date: number): Promise<RewardResponseDto> {
         const isPremium: boolean = (query.from as any).is_premium || false;
         const isBot: boolean = (query.from as any).is_bot || false;
 
